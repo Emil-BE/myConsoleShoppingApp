@@ -3,16 +3,25 @@ package com.food.ordering.system.entity;
 import java.util.Objects;
 
 public class Order {
+    private Long id;
     private Product product;
     private Integer quantity;
+    private boolean isActive;
 
-    public Order(Product product, Integer quantity) {
-
+    public Order(Long id, Product product, Integer quantity, boolean isActive) {
+        this.id = id;
         this.product = product;
         this.quantity = quantity;
+        this.isActive = isActive;
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Product getProduct() {
         return product;
@@ -28,6 +37,14 @@ public class Order {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     @Override

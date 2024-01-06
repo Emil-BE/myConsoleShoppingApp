@@ -3,6 +3,7 @@ package com.food.ordering.system;
 import com.food.ordering.system.controller.ClientController;
 import com.food.ordering.system.controller.ShopController;
 import com.food.ordering.system.repository.ClientRepository;
+import com.food.ordering.system.repository.OrderRepository;
 import com.food.ordering.system.repository.ProductRepository;
 import com.food.ordering.system.service.impl.ClientServiceImpl;
 import com.food.ordering.system.service.impl.ShopServiceImpl;
@@ -21,8 +22,9 @@ public class Main {
         var clientService = ClientServiceImpl.getInstance(clientRepository);
         var clientController = ClientController.getInstance(clientService);
 
-        var productRepositoryRepository = ProductRepository.getInstance();
-        var shopService = ShopServiceImpl.getInstance(productRepositoryRepository, clientRepository);
+        var productRepository = ProductRepository.getInstance();
+        var orderRepository = com.food.ordering.system.repository.OrderRepository.getInstance();
+        var shopService = ShopServiceImpl.getInstance(productRepository, clientRepository, orderRepository);
         var shopController = ShopController.getInstance(shopService);
 
         var input = new Scanner(System.in);

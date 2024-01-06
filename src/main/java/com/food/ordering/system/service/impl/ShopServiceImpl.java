@@ -9,6 +9,7 @@ import com.food.ordering.system.enums.ProductType;
 import com.food.ordering.system.exceptions.NotEnoughMoneyException;
 import com.food.ordering.system.exceptions.OrderNotFoundException;
 import com.food.ordering.system.repository.ClientRepository;
+import com.food.ordering.system.repository.OrderRepository;
 import com.food.ordering.system.repository.ProductRepository;
 import com.food.ordering.system.service.inter.ShopService;
 
@@ -20,15 +21,14 @@ import java.util.Optional;
 public class ShopServiceImpl implements ShopService {
     private final ProductRepository productRepository;
     private final ClientRepository clientRepository;
+    private final OrderRepository orderRepository;
     private static ShopServiceImpl shopService;
 
-    static {
-        Util.initializeProducts();
-    }
 
-    private ShopServiceImpl(ProductRepository productRepository, ClientRepository clientRepository) {
+    private ShopServiceImpl(ProductRepository productRepository, ClientRepository clientRepository, OrderRepository orderRepository) {
         this.productRepository = productRepository;
         this.clientRepository = clientRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public Order generateOrder(Long productId, Integer quantity) {
         var product = productRepository.getProductById(productId);
-        return new Order(product, quantity);
+        return orderRepository.insert(product, quantity);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class ShopServiceImpl implements ShopService {
         return true;
     }
 
-    public static ShopServiceImpl getInstance(ProductRepository productRepository, ClientRepository clientRepository) {
-        return Optional.ofNullable(shopService).orElse(new ShopServiceImpl(productRepository, clientRepository));
+    public static ShopServiceImpl getInstance(ProductRepository productRepository, ClientRepository clientRepository, OrderRepository orderRepository) {
+        return Optional.ofNullable(shopService).orElse(new ShopServiceImpl(productRepository, clientRepository, orderRepository));
     }
 }

@@ -5,14 +5,35 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Basket {
-    public Basket(List<Order> orderList, BigDecimal totalAmount) {
+
+
+    private Long id;
+    private Long clientId;
+    private List<Order> orderList;
+    private BigDecimal totalAmount;
+
+    public Basket(Long id, Long clientId, List<Order> orderList, BigDecimal totalAmount) {
+        this.id = id;
+        this.clientId = clientId;
         this.orderList = orderList;
         this.totalAmount = totalAmount;
     }
 
+    public Long getId() {
+        return id;
+    }
 
-    private List<Order> orderList;
-    private BigDecimal totalAmount;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
+    }
 
     public List<Order> getOrderList() {
         return orderList;
