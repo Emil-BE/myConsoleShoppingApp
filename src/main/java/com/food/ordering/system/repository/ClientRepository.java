@@ -63,15 +63,31 @@ public class ClientRepository {
     }
 
     public Client findById(Long clientId) {
-        return Util.clientTable.stream()
-                .filter(client -> client.getId() == clientId)
-                .findAny()
+        Client client = null;
+        try (var connection = DriverManager.getConnection(Config.DB_URL, Config.DB_USER_NAME, Config.DB_PASSWORD)) {
+            var prepareStatement = connection.prepareStatement(
+                    "select id,name, surname, gender, budget, username, password from client where id = ?");
+            prepareStatement.setLong(1, clientId);
+            var resultSet = prepareStatement.executeQuery();
+            while (resultSet.next()) {
+                var id = resultSet.getLong(1);
+                var name = resultSet.getString(2);
+                var surname = resultSet.getString(3);
+                var gender = Gender.valueOf(resultSet.getString(4));
+                var budget = resultSet.getBigDecimal(5);
+                var userNameDb = resultSet.getString(6);
+                var password = resultSet.getString(7);
+                client = new Client(id, name, surname, gender, budget, userNameDb, password);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Optional.ofNullable(client)
                 .orElseThrow(() -> new ClietnNotFoundException("Client not found by id: " + clientId));
+
     }
 
-    public static ClientRepository getInstance() {
-        return Optional.ofNullable(clientRepository).orElse(new ClientRepository());
-    }
+
 
     public Long getMaxId() {
         var maxId = 0L;
@@ -88,5 +104,9 @@ public class ClientRepository {
         }
 
         return maxId;
+    }
+
+    public static ClientRepository getInstance() {
+        return Optional.ofNullable(clientRepository).orElse(new ClientRepository());
     }
 }

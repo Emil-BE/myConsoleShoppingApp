@@ -23,7 +23,6 @@ public class Client {
         this.budget = budget;
         this.username = username;
         this.password = password;
-        this.basket = new Basket(new ArrayList<Order>(), BigDecimal.ZERO);
 
     }
 

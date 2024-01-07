@@ -101,7 +101,7 @@ public class Index {
             shop();
         } else {
             menuForProductsByType();
-            //shop();
+            shop();
         }
 
 

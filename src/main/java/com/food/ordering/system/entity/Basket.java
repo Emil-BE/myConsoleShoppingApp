@@ -12,11 +12,13 @@ public class Basket {
     private List<Order> orderList;
     private BigDecimal totalAmount;
 
-    public Basket(Long id, Long clientId, List<Order> orderList, BigDecimal totalAmount) {
+    private boolean isActive;
+
+    public Basket(Long id, Long clientId,  BigDecimal totalAmount, boolean isActive) {
         this.id = id;
         this.clientId = clientId;
-        this.orderList = orderList;
         this.totalAmount = totalAmount;
+        this.isActive = isActive;
     }
 
     public Long getId() {
@@ -49,6 +51,14 @@ public class Basket {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     @Override
