@@ -1,9 +1,12 @@
 package com.food.ordering.system.controller;
 
+import com.food.ordering.system.dto.BasketDto;
 import com.food.ordering.system.dto.ProductDto;
 import com.food.ordering.system.entity.Client;
 import com.food.ordering.system.entity.Order;
 import com.food.ordering.system.enums.ProductType;
+import com.food.ordering.system.mapper.BasketMapper;
+import com.food.ordering.system.mapper.OrderMapper;
 import com.food.ordering.system.service.inter.ClientService;
 import com.food.ordering.system.service.inter.ShopService;
 import com.food.ordering.system.service.impl.ShopServiceImpl;
@@ -39,10 +42,6 @@ public class ShopController {
         return shopService.checkOut(clientId);
     }
 
-    public String getBasketInfo(Long clientId) {
-        return shopService.getBasketInfo(clientId);
-    }
-
     public boolean clearBasket(Long clientId) {
         return shopService.clearBasket(clientId);
     }
@@ -51,9 +50,15 @@ public class ShopController {
         return shopService.removeOrderFromBasket(clientId, removingOrderName);
     }
 
+    public BasketDto getBasketInfo(Long clientId) {
+        return shopService.getBasketInfo(clientId);
+    }
+
     public static ShopController getInstance(ShopService shopService) {
         return Optional.ofNullable(shopController)
                 .orElse(new ShopController(shopService));
 
     }
+
+
 }

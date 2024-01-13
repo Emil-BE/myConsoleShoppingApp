@@ -1,6 +1,8 @@
 package com.food.ordering.system.service.impl;
 
 import com.food.ordering.system.db.Util;
+import com.food.ordering.system.dto.BasketDto;
+import com.food.ordering.system.dto.OrderDto;
 import com.food.ordering.system.dto.ProductDto;
 import com.food.ordering.system.entity.Basket;
 import com.food.ordering.system.entity.Order;
@@ -9,6 +11,8 @@ import com.food.ordering.system.enums.ProductType;
 import com.food.ordering.system.exceptions.BasketIsAlreadyEmptyException;
 import com.food.ordering.system.exceptions.NotEnoughMoneyException;
 import com.food.ordering.system.exceptions.OrderNotFoundException;
+import com.food.ordering.system.mapper.BasketMapper;
+import com.food.ordering.system.mapper.OrderMapper;
 import com.food.ordering.system.repository.*;
 import com.food.ordering.system.service.inter.ShopService;
 
@@ -58,36 +62,29 @@ public class ShopServiceImpl implements ShopService {
     public boolean addToBasket(Long clientId, Order order) {
         var client = clientRepository.findById(clientId);
         var basket = basketRepository.findByClientId(clientId);
-        if(basket.isEmpty())
-            basket = Optional.ofNullable(basketRepository.insertEmptyBasket(clientId));
+        if(basket.isEmpty()){
+             basket = Optional.ofNullable(basketRepository.insertEmptyBasket(clientId));
+        }
         basketOrderRepository.insert(basket.get(), order);
-        var totalBasketAmount = basketOrderRepository.getBasketTotalAmountByClientId(basket.get().getId());
-        basket.get().setTotalAmount(totalBasketAmount);
-        basketRepository.update(basket.get());
+        this.changeTotalAmountOfBasket(basket.get());
         return true;
 
     }
 
     @Override
     public boolean checkOut(Long clientId) {
-        /* TODO
+
         var client = clientRepository.findById(clientId);
         var budget = client.getBudget();
-        var basketAmount = client.getBasket().getTotalAmount();
+        var basket = basketRepository.findByClientId(clientId).get();
+        var basketAmount = basket.getTotalAmount();
         if (budget.compareTo(basketAmount) >= 0) {
-            client.setBudget(budget.subtract(basketAmount));
-            client.setBasket(new Basket(new ArrayList<Order>(), BigDecimal.ZERO));
+            basket.setActive(false);
+            basketRepository.update(basket);
+            clientRepository.updateBudgetByClientId(clientId, budget.subtract(basketAmount));
             return true;
         } else
-            throw new NotEnoughMoneyException("Your budget is: " + budget + " but basket total amount is: " + basketAmount); */
-
-        return false;
-    }
-
-    @Override
-    public String getBasketInfo(Long clientId) {
-        var client = clientRepository.findById(clientId);
-        return client.getBasket().toString();
+            throw new NotEnoughMoneyException("Your budget is: " + budget + " but basket total amount is: " + basketAmount);
     }
 
     @Override
@@ -103,21 +100,38 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public boolean removeOrderFromBasket(Long clientId, String removingOrderName) {
-        /* TODO
-        var client = clientRepository.findById(clientId);
-        var basket = client.getBasket();
-        var orderList = basket.getOrderList();
+        var basket = basketRepository.findByClientId(clientId);
+        var orderList = basketOrderRepository.getOrderListByBasketId(basket.get().getId());
         var order = orderList
                 .stream()
                 .filter(orderItem -> orderItem.getProduct().getName().equalsIgnoreCase(removingOrderName))
                 .findAny()
                 .orElseThrow(() -> new OrderNotFoundException("Order not found with product name:" + removingOrderName));
-        orderList.remove(order);
-        basket.setTotalAmount(basket.getTotalAmount()
-                .subtract(
-                        order.getProduct().getPrice().multiply(BigDecimal.valueOf(order.getQuantity()))));
-*/
+        orderRepository.removeOrder(order.getId());
+        changeTotalAmountOfBasket(basket.get());
         return true;
+    }
+
+    @Override
+    public void changeTotalAmountOfBasket(Basket basket) {
+        var totalBasketAmount = basketOrderRepository.getBasketTotalAmountByClientId(basket.getId());
+        basket.setTotalAmount(totalBasketAmount);
+        basketRepository.update(basket);
+    }
+
+    @Override
+    public BasketDto getBasketInfo(Long clientId) {
+        var basket = basketRepository.findByClientId(clientId);
+        if(basket.isEmpty())
+            return BasketDto.EMPTY;
+        var basketDto = BasketMapper.toDto(basket.get());
+
+        var orderList = basketOrderRepository.getOrderListByBasketId(basketDto.getId())
+                .stream()
+                .map(OrderMapper::toDto)
+                .toList();
+        basketDto.setOrderList(orderList);
+        return basketDto;
     }
 
     public static ShopServiceImpl getInstance(ProductRepository productRepository,

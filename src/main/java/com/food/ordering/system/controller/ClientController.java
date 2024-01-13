@@ -23,6 +23,8 @@ public class ClientController {
         return clientService.login(userName, password);
     }
 
+    public Client getClientInfo(Long clientId) { return clientService.findById(clientId); }
+
     public Long getMaxClientId(){
         return clientService.getMaxClientId();
     }

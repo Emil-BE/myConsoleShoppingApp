@@ -2,6 +2,7 @@ package com.food.ordering.system.repository;
 
 import com.food.ordering.system.config.Config;
 import com.food.ordering.system.db.DecimalUtils;
+import com.food.ordering.system.dto.BasketDto;
 import com.food.ordering.system.entity.Basket;
 import com.food.ordering.system.entity.Client;
 import com.food.ordering.system.entity.Order;
@@ -96,6 +97,7 @@ public class BasketRepository {
         }
 
     }
+
 
     public static BasketRepository getInstance(){
         return Optional.ofNullable(basketRepository).orElse(new BasketRepository());

@@ -39,6 +39,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public Client findById(Long clientId) {
+        return clientRepository.findById(clientId);
+    }
+
+    @Override
     public Long getMaxClientId() {
         return clientRepository.getMaxId();
     }

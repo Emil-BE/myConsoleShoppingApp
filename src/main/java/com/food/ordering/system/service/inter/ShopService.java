@@ -1,6 +1,8 @@
 package com.food.ordering.system.service.inter;
 
+import com.food.ordering.system.dto.BasketDto;
 import com.food.ordering.system.dto.ProductDto;
+import com.food.ordering.system.entity.Basket;
 import com.food.ordering.system.entity.Client;
 import com.food.ordering.system.entity.Order;
 import com.food.ordering.system.entity.Product;
@@ -20,9 +22,11 @@ public interface ShopService {
 
     boolean checkOut(Long clientId);
 
-    String getBasketInfo(Long clientId);
-
     boolean clearBasket(Long clientId);
 
     boolean removeOrderFromBasket(Long clientId, String removingOrderName);
+
+    void changeTotalAmountOfBasket(Basket basket);
+
+    BasketDto getBasketInfo(Long clientId);
 }

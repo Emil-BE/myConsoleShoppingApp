@@ -6,6 +6,7 @@ import com.food.ordering.system.entity.Client;
 import com.food.ordering.system.enums.Gender;
 import com.food.ordering.system.exceptions.ClietnNotFoundException;
 
+import java.math.BigDecimal;
 import java.sql.DriverManager;
 import java.util.Optional;
 
@@ -84,6 +85,21 @@ public class ClientRepository {
         }
         return Optional.ofNullable(client)
                 .orElseThrow(() -> new ClietnNotFoundException("Client not found by id: " + clientId));
+
+    }
+
+    public void updateBudgetByClientId(Long clientId, BigDecimal budget){
+
+        try (var connection = DriverManager.getConnection(Config.DB_URL, Config.DB_USER_NAME, Config.DB_PASSWORD)) {
+            var prepareStatement = connection.prepareStatement(
+                    "update client set budget = ? where id = ?");
+            prepareStatement.setBigDecimal(1, budget);
+            prepareStatement.setLong(2, clientId);
+            prepareStatement.execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

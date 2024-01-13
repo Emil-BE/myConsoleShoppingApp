@@ -10,7 +10,8 @@ import java.util.Optional;
 
 public class OrderRepository {
     private static OrderRepository orderRepository = null;
-    private OrderRepository(){
+
+    private OrderRepository() {
 
     }
 
@@ -22,10 +23,10 @@ public class OrderRepository {
             var preparedStatement = connection.prepareStatement(
                     "insert into orders(id, product_id, quantity, is_active)" +
                             "values(?, ?, ?, ?)");
-            var id = 1L  + getMaxId();
+            var id = 1L + getMaxId();
             preparedStatement.setLong(1, id);
             preparedStatement.setLong(2, product.getId());
-            preparedStatement.setInt(3,quantity);
+            preparedStatement.setInt(3, quantity);
             preparedStatement.setBoolean(4, true);
             preparedStatement.execute();
             return new Order(id, product, quantity, true);
@@ -34,6 +35,23 @@ public class OrderRepository {
         }
 
         return null;
+    }
+
+    public boolean removeOrder(Long orderId) {
+        try (var connection = DriverManager.getConnection(Config.DB_URL, Config.DB_USER_NAME, Config.DB_PASSWORD);
+        ) {
+
+            var preparedStatement = connection.prepareStatement(
+                    "update orders set is_active = false where id = ?");
+            preparedStatement.setLong(1, orderId);
+
+            return preparedStatement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+
+
     }
 
     public Long getMaxId() {

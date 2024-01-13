@@ -13,7 +13,6 @@ public class Client {
     private BigDecimal budget;
     private String username;
     private String password;
-    private Basket basket;
 
     public Client(Long id, String name, String surname,  Gender gender, BigDecimal budget, String username, String password) {
         this.id = id;
@@ -83,25 +82,16 @@ public class Client {
     }
 
 
-    public Basket getBasket() {
-        return basket;
-    }
-
-    public void setBasket(Basket basket) {
-        this.basket = basket;
-    }
-
-
     @Override
     public String toString() {
         return
-                "id=" + id +
-                        ", name='" + name + '\'' +
-                        ", surname='" + surname + '\'' +
-                        ", gender=" + gender +
-                        ", budget=" + budget +
-                        ", username='" + username + '\'' +
-                        ", password='" + password + '\'';
+
+                        "name=" + name + '\n' +
+                        "surname='" + surname + '\n' +
+                        "gender=" + gender + '\n' +
+                        "budget=" + budget + '\n' +
+                        "username=" + username + '\n' +
+                        "password=" + password + '\n';
 
     }
 }

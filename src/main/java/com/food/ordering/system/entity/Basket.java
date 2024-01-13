@@ -9,7 +9,6 @@ public class Basket {
 
     private Long id;
     private Long clientId;
-    private List<Order> orderList;
     private BigDecimal totalAmount;
 
     private boolean isActive;
@@ -37,14 +36,6 @@ public class Basket {
         this.clientId = clientId;
     }
 
-    public List<Order> getOrderList() {
-        return orderList;
-    }
-
-    public void setOrderList(List<Order> orderList) {
-        this.orderList = orderList;
-    }
-
     public BigDecimal getTotalAmount() {
         return totalAmount;
     }
@@ -61,14 +52,5 @@ public class Basket {
         isActive = active;
     }
 
-    @Override
-    public String toString() {
 
-        var result = this.orderList
-                .stream()
-                .map(order -> order.getProduct().getName() + " " + order.getQuantity())
-                .collect(Collectors.joining("\n"));
-        return result.concat("\t\t\t\t\t\t\t\t\tTotal amount:\t" + this.getTotalAmount());
-
-    }
 }

@@ -7,5 +7,7 @@ public interface ClientService {
     String registration(ClientDto client);
     Client login(String userName, String password);
 
+    Client findById(Long clientId);
+
     Long getMaxClientId();
 }

@@ -59,9 +59,8 @@ public class Index {
                 printBasketMenu();
             } else if (operationForLoginMenu == 3) {
                 shopController.checkOut(this.client.getId());
-                System.out.println("Successfully finished.Your budget :" + client.getBudget());
             } else if (operationForLoginMenu == 4) {
-                System.out.println(this.client);
+                System.out.println(clientController.getClientInfo(client.getId()));
             } else {
                 System.exit(0);
             }
